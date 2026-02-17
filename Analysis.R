@@ -12,7 +12,7 @@ library(ape)         # read.nexus
 library(mvMORPH)     # mvgls, mvgls.pca, manova.gls, GIC
 library(nlme)        # gls, correlation structures
 library(car)         # Anova (Type II)
-library(dplyr)       # light wrangling
+library(dplyr)       # data manipulation
 
 
 ### Data input 
@@ -209,4 +209,5 @@ for (var in variablespcsa) {
 }
 
 print(ancova_pcsa)
+
 
