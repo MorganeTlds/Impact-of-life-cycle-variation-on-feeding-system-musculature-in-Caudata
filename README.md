@@ -21,7 +21,7 @@ Our results reveal differences in muscle organization associated with ecological
 
 [Raw_Data.xlsx](Raw_Data.xlsx)
 
-Raw data for each dissected specimen:
+Excel file for the raw data for each dissected specimen:
 - Specimen ID (if there was one)
 - Family,
 - Species  
@@ -36,7 +36,7 @@ Raw data for each dissected specimen:
 
 [Mean_by_species.xlsx](Mean_by_species.xlsx)
 
-Species-level averages (when multiple individuals shared the same developmental and ecological strategies):
+Excel file for species-level averages (when multiple individuals shared the same developmental and ecological strategies):
 - Family
 - Species  
 - Life cycle strategy  
@@ -53,17 +53,17 @@ Time-calibrated salamander phylogeny from Stewart & Wiens (2025).
 
 [PhySalamanders.nex](PhySalamanders.nex)
 
-Subset of species used in this study, extracted from *BigTree.tre*, with a polytomy added for *Ambystoma mexicanum metamorph* and *Ambystoma andersoni metamorph*.
+Nexus file, subset of species used in this study, extracted from *BigTree.tre*, with a polytomy added for *Ambystoma mexicanum metamorph* and *Ambystoma andersoni metamorph*.
 
 ## R Scripts
 
 [Phylogeny.R](Phylogeny.R)
 
-Generates **PhySalamanders.nex** from **BigTree.tre**.
+R script which permits to generate **PhySalamanders.nex** from **BigTree.tre**.
 
 [Analysis.R](Analysis.R)
 
-Script used for all statistical analyses (requires **Mean_by_species.xlsx**).
+R script used for all statistical analyses (requires **Mean_by_species.xlsx**).
 
 **Main workflow:**
 1. Creation of dataframe *df*; each individual muscle was grouped by his functional group 
@@ -84,7 +84,7 @@ Select the appropriate one at lines 69–71.**
 
 [PCA_plot.R](PCA_plot.R)
 
-Generates visualizations of the PCA phylomorphospace.
+R script which generates visualizations of the PCA phylomorphospace.
 
 ## Abbreviations
 
