@@ -12,7 +12,8 @@ library(ape)         # read.nexus
 library(mvMORPH)     # mvgls, mvgls.pca, manova.gls, GIC
 library(nlme)        # gls, correlation structures
 library(car)         # Anova (Type II)
-library(dplyr)       # data manipulation
+library(dplyr)       # light wrangling
+library(emmeans)
 
 
 ### Data input 
@@ -93,8 +94,11 @@ GIC(fitLAMBDAVol)
 #IMPORTANT: Choose the evolutionary model with the lowest GIC, 
 #           and modify "model = 'X'" in the formula below accordingly.
 
-### Phylogenetic PCA
-fitACPVol <- mvgls(cbind(Vol_HyoLev,Vol_HyoPro,Vol_HyoRet,Vol_MouthOp,Vol_MouthClo) ~ HL, phy, data = df, model = "OU", method = "LL")
+### Phylogenetic PCA on the scaled variables
+
+df_scaled_Vol <- data.frame(scale(df[, variablesVol]),HL = scale(df$HL))
+
+fitACPVol <- mvgls(cbind(Vol_HyoLev,Vol_HyoPro,Vol_HyoRet,Vol_MouthOp,Vol_MouthClo) ~ HL, phy, data = df_scaled_Vol, model = "lambda", method = "LL")
 ACP_Vol   <- mvgls.pca(fitACPVol, plot = TRUE)
 
 # Variance explained per axis (%)
@@ -124,9 +128,9 @@ print(effectsize(man_Vol))
 ### ANCOVA-like (univariate PGLS per variable) 
 DFAncVol <- data.frame(df, species = row.names(df))
 ancova_Vol <- list()
+posthoc_Vol <- list()
 
 formVol <- as.formula(paste0("cbind(",paste(variablesVol, collapse = ","),") ~ ",variablesEco," * HL"))
-
 
 for (var in variablesVol) {
   # Univariate PGLS with Martins correlation (fixed)
@@ -138,10 +142,15 @@ for (var in variablesVol) {
   A <- Anova(model) # Type II
   B <- as.data.frame(A)
   ancova_Vol[[var]] <- B
+  
+  # Post hoc 
+  emm_form <- as.formula(paste("~", variablesEco))
+  posthoc <- emmeans(model, specs = emm_form)
+  posthoc_Vol[[var]] <- pairs(posthoc)
 }
 
 print(ancova_Vol)
-
+print(posthoc_Vol)
 ####------------------------------------------------------------------------------####
 ####                                   PCSA                                       ####
 ####------------------------------------------------------------------------------####
@@ -164,8 +173,11 @@ GIC(fitLAMBDApcsa)
 #IMPORTANT: Choose the evolutionary model with the lowest GIC, 
 #           and modify "model = 'X'" in the formula below accordingly.
 
-### Phylogenetic PCA
-fitACPpcsa <- mvgls(cbind(pcsa_HyoLev,pcsa_HyoPro,pcsa_HyoRet,pcsa_MouthOp,pcsa_MouthClo) ~ HL, phy, data = df, model = "OU", method = "LL")
+### Phylogenetic PCA on the scaled variables
+
+df_scaled_pcsa <- data.frame(scale(df[, variablespcsa]),HL = scale(df$HL))
+
+fitACPpcsa <- mvgls(cbind(pcsa_HyoLev,pcsa_HyoPro,pcsa_HyoRet,pcsa_MouthOp,pcsa_MouthClo) ~ HL, phy, data = df_scaled_pcsa, model = "OU", method = "LL")
 ACP_pcsa   <- mvgls.pca(fitACPpcsa, plot = TRUE)
 
 # Variance explained per axis (%)
@@ -195,6 +207,7 @@ print(effectsize(man_pcsa))
 ### ANCOVA-like (univariate PGLS per variable) 
 DFAncpcsa <- data.frame(df, species = row.names(df))
 ancova_pcsa <- list()
+posthoc_pcsa <- list()
 
 for (var in variablespcsa) {
   # Univariate PGLS with Martins correlation (fixed)
@@ -206,8 +219,12 @@ for (var in variablespcsa) {
   A <- Anova(model) # Type II
   B <- as.data.frame(A)
   ancova_pcsa[[var]] <- B
+  
+  # Post hoc 
+  emm_form <- as.formula(paste("~", variablesEco))
+  posthoc <- emmeans(model, specs = emm_form)
+  posthoc_pcsa[[var]] <- pairs(posthoc)
 }
 
 print(ancova_pcsa)
-
-
+print(posthoc_pcsa)
